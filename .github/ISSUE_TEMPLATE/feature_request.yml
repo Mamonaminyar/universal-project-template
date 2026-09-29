@@ -1,30 +1,45 @@
-name: Feature request
-description: Propose a new capability or improvement.
-title: "[Feature]: "
-labels:
-  - enhancement
+name: Feature Request
+description: Propose a feature, improvement, or capability.
+title: "[FEAT] "
+labels: ["enhancement"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem, proposed solution, and expected impact.
+
   - type: textarea
     id: problem
     attributes:
-      label: Problem
-      description: What user or engineering problem does this solve?
+      label: Problem / Need
+      description: What problem should this feature solve?
     validations:
       required: true
+
   - type: textarea
     id: proposal
     attributes:
-      label: Proposed solution
+      label: Proposed Solution
+      description: Describe the proposed capability or behavior.
     validations:
       required: true
+
   - type: textarea
     id: alternatives
     attributes:
-      label: Alternatives considered
+      label: Alternatives Considered
+      description: Describe alternatives or existing approaches.
+
   - type: textarea
-    id: acceptance
+    id: impact
     attributes:
-      label: Acceptance criteria
-      description: Define observable outcomes.
-    validations:
-      required: true
+      label: Expected Impact
+      description: Explain users, systems, security, performance, maintenance, or operational impact.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checks
+      options:
+        - label: I searched existing issues and discussions.
+          required: true

@@ -1,40 +1,72 @@
-name: Bug report
-description: Report a reproducible defect.
-title: "[Bug]: "
-labels:
-  - bug
+name: Bug Report
+description: Report a reproducible problem or defect.
+title: "[BUG] "
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Provide enough information to reproduce and diagnose the issue. Do not include secrets or sensitive personal data.
+        Thank you for reporting a problem. Please provide enough information to reproduce and investigate it.
+
   - type: textarea
-    id: description
+    id: summary
     attributes:
-      label: Description
-      description: What happened?
+      label: Summary
+      description: Clearly describe the problem.
+      placeholder: Describe what happened.
     validations:
       required: true
+
   - type: textarea
     id: reproduction
     attributes:
-      label: Reproduction
-      description: Provide the smallest reliable reproduction.
+      label: Steps to Reproduce
+      description: Provide exact steps to reproduce the problem.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
     validations:
       required: true
+
   - type: textarea
     id: expected
     attributes:
-      label: Expected behavior
+      label: Expected Behavior
     validations:
       required: true
+
   - type: textarea
     id: actual
     attributes:
-      label: Actual behavior
+      label: Actual Behavior
     validations:
       required: true
-  - type: input
-    id: version
+
+  - type: textarea
+    id: environment
     attributes:
-      label: Version / commit
+      label: Environment
+      description: Include OS, runtime, version, browser, database, or relevant platform details.
+      placeholder: |
+        OS:
+        Runtime:
+        Version:
+        Other:
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Evidence
+      description: Paste relevant logs, stack traces, screenshots, or diagnostic output.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checks
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: I can reproduce this problem.
+          required: true
