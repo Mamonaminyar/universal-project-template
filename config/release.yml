@@ -1,0 +1,26 @@
+# Release Configuration
+
+release:
+  versioning: semantic-versioning
+  source_of_truth: git_tag
+  default_branch: main
+  prerelease_format: alpha|beta|rc
+  release_notes: github_generated
+  changelog: CHANGELOG.md
+
+rules:
+  immutable_releases: true
+  signed_commits: true
+  required_ci: true
+  required_dco: true
+  required_security_checks: true
+
+tag_format:
+  stable: vMAJOR.MINOR.PATCH
+  prerelease: vMAJOR.MINOR.PATCH-<stage>.<number>
+
+examples:
+  - v1.0.0
+  - v1.1.0
+  - v1.1.1
+  - v2.0.0-rc.1
