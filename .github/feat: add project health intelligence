@@ -1,0 +1,20 @@
+## Summary
+
+Adds Project Health Intelligence to the Universal Project Template.
+
+## Included
+
+- Configuration drift detection
+- Configuration baselining
+- Environment/toolchain analysis
+- Build and test capability detection
+- JSON and Markdown reports
+- Integration smoke tests
+- Production-oriented diagnostic workflow
+
+## Validation
+
+- PowerShell syntax validation
+- Health Intelligence integration tests
+- Template validation
+- Git diff validation
