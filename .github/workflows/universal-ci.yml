@@ -1,0 +1,424 @@
+name: Universal CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - development
+
+  pull_request:
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: universal-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-integrity:
+    name: Repository Integrity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Validate required project metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required=(
+            "README.md"
+            "LICENSE"
+            "SECURITY.md"
+            "CONTRIBUTING.md"
+          )
+
+          for file in "${required[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "::error::Required file missing: $file"
+              exit 1
+            fi
+          done
+
+          echo "Repository integrity check passed."
+
+  template-validation:
+    name: Template Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Run template validation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -f "scripts/validate_template.py" ]]; then
+            python scripts/validate_template.py
+          else
+            echo "No template validator found; skipping template-specific validation."
+          fi
+
+      - name: Run template tests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -d "tests" ]] && find tests -type f -name "test_*.py" | grep -q .; then
+            python -m unittest discover -s tests -p "test_*.py"
+          else
+            echo "No Python test suite detected; skipping."
+          fi
+
+  project-detection:
+    name: Detect Project Stack
+    runs-on: ubuntu-latest
+    outputs:
+      node: ${{ steps.detect.outputs.node }}
+      python: ${{ steps.detect.outputs.python }}
+      java: ${{ steps.detect.outputs.java }}
+      go: ${{ steps.detect.outputs.go }}
+      rust: ${{ steps.detect.outputs.rust }}
+      dotnet: ${{ steps.detect.outputs.dotnet }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Detect supported stacks
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          has_file() {
+            [[ -f "$1" ]]
+          }
+
+          node=false
+          python=false
+          java=false
+          go=false
+          rust=false
+          dotnet=false
+
+          if has_file "package.json" || has_file "pnpm-lock.yaml" || has_file "yarn.lock" || has_file "package-lock.json"; then
+            node=true
+          fi
+
+          if has_file "pyproject.toml" || has_file "requirements.txt" || has_file "Pipfile" || has_file "poetry.lock"; then
+            python=true
+          fi
+
+          if has_file "pom.xml" || has_file "build.gradle" || has_file "build.gradle.kts" || has_file "settings.gradle" || has_file "settings.gradle.kts"; then
+            java=true
+          fi
+
+          if has_file "go.mod"; then
+            go=true
+          fi
+
+          if has_file "Cargo.toml"; then
+            rust=true
+          fi
+
+          if find . -maxdepth 2 -name "*.csproj" -o -name "*.fsproj" -o -name "*.sln" | grep -q .; then
+            dotnet=true
+          fi
+
+          echo "node=$node" >> "$GITHUB_OUTPUT"
+          echo "python=$python" >> "$GITHUB_OUTPUT"
+          echo "java=$java" >> "$GITHUB_OUTPUT"
+          echo "go=$go" >> "$GITHUB_OUTPUT"
+          echo "rust=$rust" >> "$GITHUB_OUTPUT"
+          echo "dotnet=$dotnet" >> "$GITHUB_OUTPUT"
+
+          echo "Detected stacks:"
+          echo "Node.js: $node"
+          echo "Python:  $python"
+          echo "Java:    $java"
+          echo "Go:      $go"
+          echo "Rust:    $rust"
+          echo ".NET:    $dotnet"
+
+  node-ci:
+    name: Node.js CI
+    needs: project-detection
+    if: needs.project-detection.outputs.node == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -f "pnpm-lock.yaml" ]]; then
+            corepack enable
+            pnpm install --frozen-lockfile
+          elif [[ -f "yarn.lock" ]]; then
+            corepack enable
+            yarn install --immutable
+          elif [[ -f "package-lock.json" ]]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run available Node.js quality checks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f "package.json" ]]; then
+            echo "No package.json found."
+            exit 0
+          fi
+
+          node -e '
+            const fs = require("fs");
+            const p = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            const scripts = p.scripts || {};
+            for (const name of ["lint", "type-check", "test", "build"]) {
+              console.log(`${name}=${Boolean(scripts[name])}`);
+            }
+          ' > /tmp/node-scripts.txt
+
+          while IFS='=' read -r script available; do
+            if [[ "$available" == "true" ]]; then
+              echo "Running npm script: $script"
+              npm run "$script"
+            fi
+          done < /tmp/node-scripts.txt
+
+  python-ci:
+    name: Python CI
+    needs: project-detection
+    if: needs.project-detection.outputs.python == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python -m pip install --upgrade pip
+
+          if [[ -f "requirements.txt" ]]; then
+            pip install -r requirements.txt
+          elif [[ -f "pyproject.toml" ]]; then
+            pip install .
+          else
+            echo "No supported dependency manifest found."
+          fi
+
+      - name: Run available Python checks
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -d "tests" ]] && find tests -type f -name "test_*.py" | grep -q .; then
+            python -m unittest discover -s tests -p "test_*.py"
+          else
+            echo "No unittest test suite detected."
+          fi
+
+  java-ci:
+    name: Java CI
+    needs: project-detection
+    if: needs.project-detection.outputs.java == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Build and test with Maven
+        if: hashFiles('pom.xml') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -x "./mvnw" ]]; then
+            ./mvnw -B verify
+          else
+            mvn -B verify
+          fi
+
+      - name: Build and test with Gradle
+        if: hashFiles('build.gradle', 'build.gradle.kts') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -x "./gradlew" ]]; then
+            ./gradlew build
+          else
+            gradle build
+          fi
+
+  go-ci:
+    name: Go CI
+    needs: project-detection
+    if: needs.project-detection.outputs.go == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: true
+
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          go test ./...
+
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          go build ./...
+
+  rust-ci:
+    name: Rust CI
+    needs: project-detection
+    if: needs.project-detection.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --all-targets --all-features
+
+      - name: Check
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo check --all-targets --all-features
+
+  dotnet-ci:
+    name: .NET CI
+    needs: project-detection
+    if: needs.project-detection.outputs.dotnet == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet restore
+
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build --no-restore --configuration Release
+
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet test --no-build --configuration Release
+
+  universal-gate:
+    name: Universal Quality Gate
+    needs:
+      - repository-integrity
+      - template-validation
+      - project-detection
+      - node-ci
+      - python-ci
+      - java-ci
+      - go-ci
+      - rust-ci
+      - dotnet-ci
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Evaluate required jobs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          results=(
+            "${{ needs.repository-integrity.result }}"
+            "${{ needs.template-validation.result }}"
+            "${{ needs.project-detection.result }}"
+            "${{ needs.node-ci.result }}"
+            "${{ needs.python-ci.result }}"
+            "${{ needs.java-ci.result }}"
+            "${{ needs.go-ci.result }}"
+            "${{ needs.rust-ci.result }}"
+            "${{ needs.dotnet-ci.result }}"
+          )
+
+          for result in "${results[@]}"; do
+            if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
+              echo "::error::Universal CI gate failed."
+              exit 1
+            fi
+          done
+
+          echo "Universal CI gate passed."
