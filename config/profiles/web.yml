@@ -1,0 +1,26 @@
+profile:
+  id: web
+  name: Universal Web Application
+  category: web
+  description: Production-ready web application profile.
+
+architecture:
+  style: modular
+  deployment: cloud-ready
+  observability: required
+  security: required
+
+quality:
+  testing: required
+  linting: recommended
+  type_checking: recommended
+  documentation: required
+
+recommended_capabilities:
+  - authentication
+  - authorization
+  - accessibility
+  - observability
+  - error_handling
+  - configuration_management
+  - automated_testing

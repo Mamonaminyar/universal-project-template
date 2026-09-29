@@ -1,0 +1,27 @@
+profile:
+  id: data
+  name: Universal Data Platform
+  category: data
+  description: Production-ready data engineering, analytics and processing profile.
+
+architecture:
+  style: modular
+  deployment: cloud-ready
+  observability: required
+  security: required
+
+quality:
+  testing: required
+  data_validation: required
+  lineage: recommended
+  documentation: required
+
+recommended_capabilities:
+  - ingestion
+  - validation
+  - transformation
+  - lineage
+  - quality_checks
+  - reproducibility
+  - access_control
+  - monitoring

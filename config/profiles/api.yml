@@ -1,0 +1,27 @@
+profile:
+  id: api
+  name: Universal API Service
+  category: backend
+  description: Production-ready API and service profile.
+
+architecture:
+  style: modular
+  deployment: cloud-ready
+  observability: required
+  security: required
+
+quality:
+  testing: required
+  contract_testing: recommended
+  schema_validation: required
+  documentation: required
+
+recommended_capabilities:
+  - authentication
+  - authorization
+  - rate_limiting
+  - validation
+  - health_checks
+  - audit_logging
+  - metrics
+  - tracing
