@@ -1,0 +1,44 @@
+version: "1.0"
+mode: "production"
+
+severity:
+  fail_on: "error"
+  report_warnings: true
+
+scan:
+  deep: true
+  max_file_size_mb: 10
+
+security:
+  detect_secrets: true
+  detect_private_keys: true
+  detect_env_files: true
+  detect_credentials: true
+
+structure:
+  required:
+    - README.md
+    - LICENSE
+    - SECURITY.md
+    - CONTRIBUTING.md
+    - CHANGELOG.md
+    - config
+    - docs
+    - scripts
+    - tests
+    - .github
+
+profiles:
+  supported:
+    - web
+    - api
+    - ai
+    - data
+    - mobile
+    - enterprise
+
+reporting:
+  directory: .doctor\reports
+  formats:
+    - json
+    - markdown
