@@ -1,0 +1,25 @@
+profile:
+  id: mobile
+  name: Universal Mobile Application
+  category: mobile
+  description: Production-ready mobile application profile.
+
+architecture:
+  style: modular
+  deployment: cloud-ready
+  observability: required
+  security: required
+
+quality:
+  testing: required
+  accessibility: recommended
+  documentation: required
+
+recommended_capabilities:
+  - authentication
+  - secure_storage
+  - offline_support
+  - crash_reporting
+  - analytics
+  - accessibility
+  - automated_testing

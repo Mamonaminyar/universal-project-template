@@ -1,0 +1,28 @@
+profile:
+  id: ai
+  name: Universal AI Application
+  category: artificial-intelligence
+  description: Production-ready AI, agent, RAG and intelligent application profile.
+
+architecture:
+  style: modular
+  deployment: cloud-ready
+  observability: required
+  security: required
+
+quality:
+  testing: required
+  evaluation: required
+  prompt_versioning: recommended
+  documentation: required
+
+recommended_capabilities:
+  - model_provider_abstraction
+  - prompt_management
+  - retrieval_augmented_generation
+  - tool_orchestration
+  - evaluation
+  - guardrails
+  - audit_logging
+  - cost_tracking
+  - observability

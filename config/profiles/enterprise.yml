@@ -1,0 +1,30 @@
+profile:
+  id: enterprise
+  name: Universal Enterprise Platform
+  category: enterprise
+  description: Enterprise-scale multi-service software platform profile.
+
+architecture:
+  style: modular
+  deployment: cloud-ready
+  observability: required
+  security: required
+  disaster_recovery: recommended
+
+quality:
+  testing: required
+  compliance: recommended
+  auditability: required
+  documentation: required
+
+recommended_capabilities:
+  - identity_and_access_management
+  - authorization
+  - audit_logging
+  - observability
+  - configuration_management
+  - secrets_management
+  - backup_and_recovery
+  - disaster_recovery
+  - policy_management
+  - supply_chain_security
