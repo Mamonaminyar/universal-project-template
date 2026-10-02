@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Security vulnerability
-    url: https://github.com/Mamonaminyar/universal-project-template/security/policy
-    about: Do not report security vulnerabilities in public issues. Use the project's private security reporting mechanism.
+  - name: Security Vulnerability
+    url: https://github.com/Mamonaminyar/universal-project-template/security/advisories/new
+    about: Report security vulnerabilities privately.
+  - name: Documentation
+    url: https://github.com/Mamonaminyar/universal-project-template
+    about: Consult the repository documentation and README.

@@ -1,31 +1,38 @@
 ## Summary
 
-Describe the problem and the intended change.
+Describe what this pull request changes and why.
 
-## Scope
+## Type of Change
 
-- [ ] Focused change
-- [ ] No unrelated refactor
-- [ ] Backwards compatibility considered
+- [ ] Feature
+- [ ] Bug fix
+- [ ] Documentation
+- [ ] Refactor
+- [ ] Security
+- [ ] CI/CD
+- [ ] Configuration
+- [ ] Maintenance
 
 ## Validation
 
-- [ ] Tests added/updated for behavior changes
-- [ ] Relevant tests pass
-- [ ] Lint/type/static checks pass
-- [ ] Security implications reviewed
-- [ ] Documentation updated when necessary
+- [ ] Tests added or updated where applicable
+- [ ] Existing tests pass
+- [ ] CI checks pass
+- [ ] Documentation updated where applicable
+- [ ] Security impact reviewed
+- [ ] Breaking changes identified and documented
 
-## Operations
+## DCO
 
-- [ ] No deployment impact
-- [ ] Deployment procedure updated
-- [ ] Rollback or recovery considered
+- [ ] All commits are signed off with Signed-off-by
 
-## Risk
+## Review Notes
 
-Describe known risks and mitigations.
+Add implementation details, migration notes, compatibility considerations, or known limitations.
 
-## Related Work
+## Checklist
 
-Link issues, decisions or documentation.
+- [ ] This change is scoped and focused
+- [ ] No secrets or sensitive data are included
+- [ ] No unnecessary generated files are included
+- [ ] The change is ready for review
