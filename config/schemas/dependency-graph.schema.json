@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Mamonaminyar/universal-project-template/schemas/dependency-graph.schema.json",
+  "title": "Universal Dependency Graph",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "projectRoot",
+    "summary",
+    "manifests",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "projectRoot": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object"
+    },
+    "manifests": {
+      "type": "array"
+    },
+    "nodes": {
+      "type": "array"
+    },
+    "edges": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}
