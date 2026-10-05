@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Mamonaminyar/universal-project-template/schemas/finding.schema.json",
+  "title": "Universal Project Doctor Finding",
+  "type": "object",
+  "required": ["id", "severity", "category", "message", "path", "rule"],
+  "properties": {
+    "id": { "type": "string" },
+    "severity": {
+      "type": "string",
+      "enum": ["info", "warning", "error", "critical"]
+    },
+    "category": { "type": "string" },
+    "message": { "type": "string" },
+    "path": { "type": "string" },
+    "rule": { "type": "string" },
+    "recommendation": { "type": "string" },
+    "detectedAt": { "type": "string" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}
