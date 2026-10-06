@@ -1,0 +1,83 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+secrets/
+.local/
+.local.*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/settings.local.json
+.idea/
+*.swp
+*.swo
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+.cache/
+
+# JavaScript / TypeScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+.pnpm-store/
+.next/
+.nuxt/
+dist/
+build/
+coverage/
+.turbo/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+
+# Java / JVM
+target/
+.gradle/
+
+# Rust
+target/
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Go
+vendor/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Generic generated output
+artifacts/
+out/
+generated/
+reports/

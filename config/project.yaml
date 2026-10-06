@@ -1,0 +1,34 @@
+project:
+  name: "REPLACE_PROJECT_NAME"
+  description: "REPLACE_PROJECT_DESCRIPTION"
+  version: "0.1.0"
+  status: "development"
+
+ownership:
+  organization: "REPLACE_ORGANIZATION"
+  team: "REPLACE_TEAM"
+  technical_owner: "REPLACE_TECHNICAL_OWNER"
+
+platform:
+  type: "REPLACE_PLATFORM_TYPE"
+  languages: []
+  frameworks: []
+  runtimes: []
+
+quality:
+  test_required_for_behavior_changes: true
+  documentation_required_for_architecture_changes: true
+  security_review_required_for_sensitive_changes: true
+
+operations:
+  environments:
+    - local
+    - test
+  production: false
+  backup_required: false
+  observability_required: false
+
+security:
+  handles_sensitive_data: false
+  external_integrations: []
+  secrets_outside_repository: true
